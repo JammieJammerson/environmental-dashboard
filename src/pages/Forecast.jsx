@@ -1,10 +1,17 @@
 import { useEffect, useState } from "react";
+import Chilly from "../assets/hero.png";
+import Hot from "../assets/hero.png";
+import Pleasant from "../assets/hero.png";
+import Windy from "../assets/hero.png";
+import Sunrise from "../assets/hero.png";
+import Sunset from "../assets/hero.png";
+import "./Pages.css";
 
 function Forecast() {
-  const [weather, setWeather] = useState(null);
+    const [weather, setWeather] = useState(null);
 
-  const API_KEY = "YOUR_OPENWEATHERMAP_API_KEY";
-  const CITY = "CITY_NAME";
+  const API_KEY = "65399f17217b8cacce6367b9f8c456b6";
+  const CITY = "Elizabethton";
 
   useEffect(() => {
     fetch(
@@ -53,11 +60,15 @@ function Forecast() {
           <div className="info-box">
           <h2>Suggestion</h2>
           <p>
-            {weather.main.temp < 60
-              ? "It's a bit chilly outside. Consider wearing a jacket!"
-              : weather.main.temp > 85
-              ? "It's quite hot outside. Stay hydrated and consider wearing light clothing!"
-              : "The weather looks pleasant. Enjoy your day!"}
+            {weather?.main?.temp < 60 && 
+              <p>It's a bit chilly outside. Consider wearing a jacket!</p>
+            }
+            {weather?.main?.temp > 85 && (
+              <p>It's quite hot outside. Stay hydrated and consider wearing light clothing!</p>
+            )}
+            {weather?.main?.temp >= 60 && weather?.main?.temp <= 85 && (
+              <p>The weather looks pleasant. Enjoy your day!</p>
+            )}
           </p>
         </div>
         
@@ -80,6 +91,7 @@ function Forecast() {
           <h2>Sunset</h2>
           <p>
             The sunset is at {new Date(weather.sys.sunset * 1000).toLocaleTimeString()}.
+
           </p>
         </div>
 

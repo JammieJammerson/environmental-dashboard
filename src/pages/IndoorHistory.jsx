@@ -1,17 +1,18 @@
 import { useEffect, useState } from "react";
+import "./Pages.css";
 
 function IndoorHistory() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("https://localhost:7220/api/reports")
+    fetch("http://localhost:4000/reports")
       .then(res => res.json())
       .then(data => setData(data))
       .catch(err => console.error(err));
   }, []);
 
   return (
-    <div className="page-content">
+    <div className="indoor-history-content">
       <h1>Indoor Temperature History</h1>
 
       {data.length === 0 ? (

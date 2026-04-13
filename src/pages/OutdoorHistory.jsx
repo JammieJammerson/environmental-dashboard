@@ -4,14 +4,14 @@ function OutdoorHistory() {
   const [data, setData] = useState([]);
 
   useEffect(() => {
-    fetch("https://localhost:7220/api/reports")
+    fetch("http://localhost:4000/reports")
       .then(res => res.json())
       .then(data => setData(data))
       .catch(err => console.error(err));
   }, []);
 
   return (
-    <div className="page-content">
+    <div className="outdoor-history-content">
       <h1>Outdoor Temperature History</h1>
 
       {data.length === 0 ? (

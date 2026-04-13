@@ -11,14 +11,11 @@ function Home() {
   const fetchData = () => {
     fetch("https://localhost:7220/api/reports")
       .then(res => {
-        console.log("RESPONSE:", res);
+        if (!res.ok) throw new Error(`Reports fetch failed: ${res.status}`);
         return res.json();
       })
-      .then(data => {
-        console.log("DATA:", data);
-        setData(data);
-      })
-      .catch(err => console.log("ERROR:", err));
+      .then(json => setData(json))
+      .catch(err => console.error("Error fetching reports:", err));
   };
 
   fetchData(); // run once immediately
@@ -38,16 +35,27 @@ function Home() {
 
   const [weather, setWeather] = useState(null);
 
-  const API_KEY = "YOUR_OPENWEATHERMAP_API_KEY";
-  const CITY = "CITY_NAME";
+  const API_KEY = "65399f17217b8cacce6367b9f8c456b6";
+  const CITY = "Elizabethton";
 
   useEffect(() => {
+    if (!API_KEY || API_KEY.includes("YOUR") || !CITY || CITY.includes("NAME")) {
+      console.warn("OpenWeather API_KEY or CITY not set; skipping weather fetch.");
+      return;
+    }
+
     fetch(
       `https://api.openweathermap.org/data/2.5/weather?q=${CITY}&units=imperial&appid=${API_KEY}`
     )
-      .then(res => res.json())
-      .then(data => setWeather(data))
-      .catch(err => console.error(err));
+      .then(res => {
+        if (!res.ok) throw new Error(`Weather API error: ${res.status}`);
+        return res.json();
+      })
+      .then(data => {
+        if (data && data.cod && data.cod !== 200) throw new Error(data.message || 'Weather API returned an error');
+        setWeather(data);
+      })
+      .catch(err => console.error("Weather fetch error:", err));
   }, []);
 
 
@@ -68,7 +76,7 @@ function Home() {
       <div className="display small outdoor">
         <h3>Latest Outdoor Temp</h3>
         <p style={{ fontSize: "50px" }}>
-          {weather
+          {weather?.main?.temp
             ? `${Math.round(weather.main.temp)}°F`
             : "Loading..."}
         </p>
@@ -79,7 +87,7 @@ function Home() {
         <h2>Today's Forecast</h2>
 
         <p>
-          {weather
+          {weather?.weather?.[0]?.description
             ? weather.weather[0].description
             : "Loading..."}
         </p>
